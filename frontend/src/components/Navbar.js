@@ -4,18 +4,18 @@ import { Link } from 'react-router-dom';
 function Navbar({ alwaysWhite = false }) {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-
-  // const [isLoggedIn, setIsLoggedIn] = useState(true);
-  // const userProfile = {
-  //   name: "Maria Klara",
-  //   email: "klara@gmail.com",
-  //   avatar: "/image/resident1.jfif" 
-  // };
+  
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const userProfile = {
+    name: "Maria Klara",
+    email: "klara@gmail.com",
+    avatar: "/image/resident1.jfif" 
+  };
 
   useEffect(() => {
     const handleScroll = () => {
-      if (alwaysWhite) return;
-
+      if (alwaysWhite) return; 
+      
       const navbar = document.querySelector('.navbar');
       if (window.scrollY > 100) {
         navbar.style.backgroundColor = 'white';
@@ -57,14 +57,17 @@ function Navbar({ alwaysWhite = false }) {
     return () => document.removeEventListener('click', closeDropdown);
   }, [showProfileDropdown]);
 
-  // const toggleProfileDropdown = (e) => {
-  //   e.stopPropagation();
-  //   setShowProfileDropdown(!showProfileDropdown);
-  // };
+  // Toggle profile dropdown
+  const toggleProfileDropdown = (e) => {
+    e.stopPropagation();
+    setShowProfileDropdown(!showProfileDropdown);
+  };
 
-  // const handleLogout = () => {
-  //   setIsLoggedIn(false);
-  // };
+  // Function to handle logout
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    // In a real app, you would call your logout function from auth context
+  };
 
   return (
     <nav className="navbar nav-blur">
@@ -82,13 +85,13 @@ function Navbar({ alwaysWhite = false }) {
             <li><a href="#contact" className="nav-link">Contact</a></li>
           </ul>
         </div>
-
-        {/* {isLoggedIn ? (
+        
+        {isLoggedIn ? (
           <div className="profile-container">
             <div className="profile-avatar" onClick={toggleProfileDropdown}>
               <img src={userProfile.avatar} alt="Profile" />
             </div>
-
+            
             {showProfileDropdown && (
               <div className="profile-dropdown">
                 <div className="profile-header">
@@ -111,10 +114,10 @@ function Navbar({ alwaysWhite = false }) {
             )}
           </div>
         ) : (
-          <Link to="/list-room" className="navbar-btn">Favorite Rooms</Link>
-        )} */}
-
-        <button
+          <Link to="/list-room" className="navbar-btn">List Your Rooms</Link>
+        )}
+        
+        <button 
           className="mobile-menu-btn"
           onClick={() => setShowMobileMenu(!showMobileMenu)}
           aria-label="Open mobile menu"
@@ -122,8 +125,8 @@ function Navbar({ alwaysWhite = false }) {
           <i className="fas fa-bars"></i>
         </button>
       </div>
-
-      {/* {showMobileMenu && (
+      
+      {showMobileMenu && (
         <div className="mobile-menu">
           <div className="container">
             <Link to="/" className="nav-link">Home</Link>
@@ -138,11 +141,11 @@ function Navbar({ alwaysWhite = false }) {
                 <button onClick={handleLogout} className="nav-link logout-link"><i className="fas fa-sign-out-alt"></i> Log Out</button>
               </>
             ) : (
-              <Link to="/list-room" className="nav-link">Favorite Rooms</Link>
+              <Link to="/list-room" className="nav-link">List Your Rooms</Link>
             )}
           </div>
         </div>
-      )} */}
+      )}
     </nav>
   );
 }
