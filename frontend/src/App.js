@@ -4,6 +4,8 @@ import Home from './Home';
 import Rooms from './Rooms';
 import Login from './Login';
 import Signup from './Signup';
+import FavoriteRooms from './ListYourRoom';
+import Profile from './Profile';
 
 function Layout() {
   return (
@@ -21,6 +23,8 @@ function App() {
         <Route path="/rooms" element={<Rooms />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/list-room" element={<FavoriteRooms />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </Router>
   );

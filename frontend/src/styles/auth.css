@@ -26,7 +26,6 @@
     background-color: white;
 }
 
-/* Card Section */
 .auth-card {
     flex: 1;
     padding: 1.25rem;
@@ -320,7 +319,6 @@
     text-decoration: underline;
 }
 
-/* Image Section */
 .auth-image {
     display: none;
     position: relative;
@@ -361,7 +359,6 @@
     max-width: 18rem;
 }
 
-/* Responsive Styles */
 @media screen and (min-width: 768px) {
     .auth-image {
         display: block;
