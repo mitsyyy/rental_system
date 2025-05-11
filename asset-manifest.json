@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/rental_system/static/css/main.74e5d17c.css",
+    "main.js": "/rental_system/static/js/main.240e30bb.js",
+    "static/js/453.8ab44547.chunk.js": "/rental_system/static/js/453.8ab44547.chunk.js",
+    "static/media/backg.jpg": "/rental_system/static/media/backg.e63fdd7f35289fc6a508.jpg",
+    "index.html": "/rental_system/index.html",
+    "main.74e5d17c.css.map": "/rental_system/static/css/main.74e5d17c.css.map",
+    "main.240e30bb.js.map": "/rental_system/static/js/main.240e30bb.js.map",
+    "453.8ab44547.chunk.js.map": "/rental_system/static/js/453.8ab44547.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.74e5d17c.css",
+    "static/js/main.240e30bb.js"
+  ]
+}
