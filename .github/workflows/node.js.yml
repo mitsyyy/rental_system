@@ -31,12 +31,14 @@ jobs:
     - name: run npm ci at frontend
       working-directory: ./frontend
       run: npm ci
-    - name: run npm start at frontend
-      working-directory: ./frontend
-      run: npm start
-    # - name: run npm build at frontend
+    # - name: run npm start at frontend
     #   working-directory: ./frontend
-    #   run: npm run build --if-present
+    #   run: npm start
+    - name: run npm build at frontend
+      working-directory: ./frontend
+      run: npm run build --if-present
+      env:
+         CI: false
     # - name: run npm test at frontend
     #   working-directory: ./frontend
     #   run: npm test
