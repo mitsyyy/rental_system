@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import './styles/listyourroom.css';
+import './styles/ListYourRoom.css';
 
 interface Room {
   id: number;
