@@ -1,18 +1,71 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import './styles/style.css';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
-function Home() {
-  const [activeFilters, setActiveFilters] = useState({
+interface Room {
+  id: number;
+  title: string;
+  price: string;
+  size: string;
+  bed: string;
+  bath: string;
+  floor: string;
+  amenities: string[];
+  image: string;
+  status: 'available' | 'occupied';
+  dateAdded: string;
+  description: string;
+  location: string;
+  leaseTerms?: string[];
+  deposit?: string;
+  utilities?: string;
+  moveInDate?: string;
+  type?: string;
+  furnishingStatus: 'fully furnished' | 'semi-furnished' | 'unfurnished';
+  roomCount: string;
+}
+
+interface Review {
+  id: number;
+  name: string;
+  rating: number;
+  comment: string;
+  date: string;
+  avatar: string;
+}
+
+interface ContactForm {
+  name: string;
+  email: string;
+  message: string;
+}
+
+interface TourForm {
+  name: string;
+  email: string;
+  phone: string;
+  date: string;
+  time: string;
+  message: string;
+}
+
+interface Filters {
+  location: string | null;
+  price: string | null;
+  type: string | null;
+}
+
+const Home: React.FC = () => {
+  const [activeFilters, setActiveFilters] = useState<Filters>({
     location: null,
     price: null,
     type: null
   });
-  const [showModal, setShowModal] = useState(false);
-  const [selectedRoom, setSelectedRoom] = useState(null);
-  const [showBookTourModal, setShowBookTourModal] = useState(false);
-  const [tourForm, setTourForm] = useState({
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+  const [showBookTourModal, setShowBookTourModal] = useState<boolean>(false);
+  const [tourForm, setTourForm] = useState<TourForm>({
     name: '',
     email: '',
     phone: '',
@@ -21,61 +74,76 @@ function Home() {
     message: ''
   });
 
-  const rooms = [
+  const rooms: Room[] = [
     {
       id: 1,
       title: "Room 105",
       price: "₱15,000/mo",
-      size: "280",
+      size: "28 sqm",
       bed: "Single bed",
       bath: "Private bathroom",
-      location: "Makati",
-      description: "Bright and airy room with large windows offering plenty of natural light. Features a comfortable single bed, private bathroom, and walk-in closet. Perfect for young professionals who want a clean, modern space in the heart of the city.",
-      amenities: ["WiFi", "AC", "Laundry", "Desk", "TV", "Mini-fridge"],
+      floor: "1st Floor",
+      amenities: ["WiFi", "AC", "Kitchenette", "Private Bathroom"],
       image: "/image/room1.jfif",
       status: "available",
-      leaseTerms: ["6 months", "12 months"],
+      dateAdded: "3 days ago",
+      description: "Bright and airy room with large windows offering plenty of natural light. Features a comfortable single bed, private bathroom, and walk-in closet. Perfect for students or young professionals.",
+      location: "Fovere Residences",
+      leaseTerms: ["12 months", "6 months", "month-to-month"],
       deposit: "₱15,000",
       utilities: "Included",
-      moveInDate: "Immediate"
+      moveInDate: "Immediate",
+      type: "Studio Room",
+      furnishingStatus: "fully furnished",
+      roomCount: "1 room"
     },
     {
       id: 2,
       title: "Room 107",
       price: "₱12,000/mo",
-      size: "240",
+      size: "25 sqm",
       bed: "Queen bed",
-      bath: "Private bathroom",
-      location: "Quezon City",
-      description: "Warm and inviting room with comfortable queen bed and private bathroom. Features a small balcony overlooking the garden. Quiet neighborhood with easy access to public transportation.",
-      amenities: ["WiFi", "Heating", "Shared Kitchen", "Parking", "Balcony", "Storage"],
+      bath: "Shared bathroom",
+      floor: "1st Floor",
+      amenities: ["WiFi", "AC", "Kitchenette"],
       image: "/image/room2.jfif",
       status: "occupied",
-      leaseTerms: ["12 months"],
+      dateAdded: "5 days ago",
+      description: "Warm and inviting room with comfortable queen bed and shared bathroom. Features a study desk, bookshelf, and ample storage. Quiet neighborhood with easy access to public transportation.",
+      location: "Fovere Residences",
+      leaseTerms: ["12 months", "6 months"],
       deposit: "₱12,000",
       utilities: "Not included",
-      moveInDate: "Next month"
+      moveInDate: "Next month",
+      type: "Standard Room",
+      furnishingStatus: "semi-furnished",
+      roomCount: "1 room"
     },
     {
       id: 3,
       title: "Room 201",
       price: "₱18,000/mo",
-      size: "220",
+      size: "35 sqm",
       bed: "Twin bed",
       bath: "Shared bathroom",
-      location: "BGC",
-      description: "Efficiently designed room with twin bed, built-in storage, and shared bathroom (max 2 others). Ideal for students who want a simple, functional space close to business centers. Includes study area with desk and chair.",
-      amenities: ["WiFi", "AC", "Study Area", "Shared Kitchen", "Laundry", "Bike Storage"],
+      floor: "2nd Floor",
+      amenities: ["WiFi", "AC", "Balcony"],
       image: "/image/room3.jfif",
       status: "available",
-      leaseTerms: ["9 months", "12 months"],
+      dateAdded: "1 week ago",
+      description: "Efficiently designed room with twin bed, built-in storage, and shared bathroom (max 2 others). Includes a spacious area and small balcony with city view.",
+      location: "Fovere Residences",
+      leaseTerms: ["12 months", "6 months", "month-to-month", "weekly"],
       deposit: "₱18,000",
       utilities: "Included",
-      moveInDate: "Next week"
+      moveInDate: "Next week",
+      type: "Suite",
+      furnishingStatus: "unfurnished",
+      roomCount: "2 rooms"
     }
   ];
 
-  const reviews = [
+  const reviews: Review[] = [
     {
       id: 1,
       name: "Maria Santos",
@@ -102,13 +170,13 @@ function Home() {
     }
   ];
 
-  const [contactForm, setContactForm] = useState({
+  const [contactForm, setContactForm] = useState<ContactForm>({
     name: '',
     email: '',
     message: ''
   });
 
-  const handleContactSubmit = (e) => {
+  const handleContactSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log('Form submitted:', contactForm);
     setContactForm({ name: '', email: '', message: '' });
@@ -116,22 +184,26 @@ function Home() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const navbar = document.querySelector('.navbar');
-      if (window.scrollY > 100) {
-        navbar.style.backgroundColor = 'white';
-        navbar.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
-        updateNavColors('dark');
-      } else {
-        navbar.style.backgroundColor = 'transparent';
-        navbar.style.boxShadow = 'none';
-        updateNavColors('light');
+      const navbar = document.querySelector('.navbar') as HTMLElement;
+      if (navbar) {
+        if (window.scrollY > 100) {
+          navbar.style.backgroundColor = 'white';
+          navbar.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
+          updateNavColors('dark');
+        } else {
+          navbar.style.backgroundColor = 'transparent';
+          navbar.style.boxShadow = 'none';
+          updateNavColors('light');
+        }
       }
     };
 
-    const updateNavColors = (theme) => {
+    const updateNavColors = (theme: 'dark' | 'light') => {
       const elements = document.querySelectorAll('.nav-link:not(.active), .navbar-brand span');
       elements.forEach(el => {
-        el.style.color = theme === 'dark' ? '#1e293b' : 'white';
+        if (el instanceof HTMLElement) {
+          el.style.color = theme === 'dark' ? '#1e293b' : 'white';
+        }
       });
     };
 
@@ -139,7 +211,7 @@ function Home() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleFilter = (filterType, filterValue) => {
+  const handleFilter = (filterType: keyof Filters, filterValue: string) => {
     setActiveFilters(prev => ({
       ...prev,
       [filterType]: prev[filterType] === filterValue ? null : filterValue
@@ -151,12 +223,12 @@ function Home() {
            (!activeFilters.type || room.type === activeFilters.type);
   });
 
-  const handleRoomClick = (room) => {
+  const handleRoomClick = (room: Room) => {
     setSelectedRoom(room);
     setShowModal(true);
   };
 
-  const handleTourSubmit = (e) => {
+  const handleTourSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log('Tour booking submitted:', tourForm);
     setTourForm({
@@ -230,6 +302,9 @@ function Home() {
               >
                 <div className="room-image">
                   <img src={room.image} alt={room.title} />
+                  <div className={`status-badge ${room.status === 'available' ? 'status-available' : 'status-occupied'}`}>
+                    {room.status === 'available' ? 'Available' : 'Occupied'}
+                  </div>
                 </div>
                 <div className="room-details">
                   <div className="room-header">
@@ -237,7 +312,10 @@ function Home() {
                     <span className="room-price">{room.price}</span>
                   </div>
                   <p className="room-specs">
-                    {room.size} sqft • {room.bed} • {room.bath}
+                    {room.size} • {room.furnishingStatus} • {room.roomCount}
+                  </p>
+                  <p className="room-location">
+                    <i className="fas fa-building"></i> {room.floor}
                   </p>
                   <div className="room-features">
                     {room.amenities.slice(0, 4).map((amenity, i) => (
@@ -272,9 +350,13 @@ function Home() {
             <div className="room-details">
               <p className="room-price">{selectedRoom.price}</p>
               <p className="room-specs">
-                {selectedRoom.size} sqft • {selectedRoom.bed} • {selectedRoom.bath}
+                {selectedRoom.size} • {selectedRoom.furnishingStatus} • {selectedRoom.roomCount}
               </p>
-              <p>{selectedRoom.description}</p>
+              <div className="room-location-info">
+                <i className="fas fa-building"></i> 
+                <span>{selectedRoom.floor} • Fovere Residences</span>
+              </div>
+              <p className="room-description">{selectedRoom.description}</p>
               <div className="room-features">
                 {selectedRoom.amenities.map((amenity, i) => (
                   <span key={i} className="feature-tag">{amenity}</span>
@@ -406,7 +488,7 @@ function Home() {
                     id="name" 
                     className="form-control"
                     value={contactForm.name}
-                    onChange={(e) => setContactForm({...contactForm, name: e.target.value})}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => setContactForm({...contactForm, name: e.target.value})}
                     required
                   />
                 </div>
@@ -417,7 +499,7 @@ function Home() {
                     id="email" 
                     className="form-control"
                     value={contactForm.email}
-                    onChange={(e) => setContactForm({...contactForm, email: e.target.value})}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => setContactForm({...contactForm, email: e.target.value})}
                     required
                   />
                 </div>
@@ -425,10 +507,10 @@ function Home() {
                   <label htmlFor="message">Message</label>
                   <textarea 
                     id="message" 
-                    rows="4" 
+                    rows={4} 
                     className="form-control"
                     value={contactForm.message}
-                    onChange={(e) => setContactForm({...contactForm, message: e.target.value})}
+                    onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setContactForm({...contactForm, message: e.target.value})}
                     required
                   ></textarea>
                 </div>
@@ -457,7 +539,7 @@ function Home() {
                     id="tour-name" 
                     className="form-control"
                     value={tourForm.name}
-                    onChange={(e) => setTourForm({...tourForm, name: e.target.value})}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => setTourForm({...tourForm, name: e.target.value})}
                     required
                   />
                 </div>
@@ -468,7 +550,7 @@ function Home() {
                     id="tour-email" 
                     className="form-control"
                     value={tourForm.email}
-                    onChange={(e) => setTourForm({...tourForm, email: e.target.value})}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => setTourForm({...tourForm, email: e.target.value})}
                     required
                   />
                 </div>
@@ -479,7 +561,7 @@ function Home() {
                     id="tour-phone" 
                     className="form-control"
                     value={tourForm.phone}
-                    onChange={(e) => setTourForm({...tourForm, phone: e.target.value})}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => setTourForm({...tourForm, phone: e.target.value})}
                     required
                   />
                 </div>
@@ -491,7 +573,7 @@ function Home() {
                       id="tour-date" 
                       className="form-control"
                       value={tourForm.date}
-                      onChange={(e) => setTourForm({...tourForm, date: e.target.value})}
+                      onChange={(e: ChangeEvent<HTMLInputElement>) => setTourForm({...tourForm, date: e.target.value})}
                       required
                     />
                   </div>
@@ -501,7 +583,7 @@ function Home() {
                       id="tour-time" 
                       className="form-control"
                       value={tourForm.time}
-                      onChange={(e) => setTourForm({...tourForm, time: e.target.value})}
+                      onChange={(e: ChangeEvent<HTMLSelectElement>) => setTourForm({...tourForm, time: e.target.value})}
                       required
                     >
                       <option value="">Select a time</option>
@@ -519,11 +601,11 @@ function Home() {
                   <label htmlFor="tour-message">Additional Information</label>
                   <textarea 
                     id="tour-message" 
-                    rows="3" 
+                    rows={3} 
                     className="form-control"
                     placeholder="Let us know what type of room you're interested in"
                     value={tourForm.message}
-                    onChange={(e) => setTourForm({...tourForm, message: e.target.value})}
+                    onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setTourForm({...tourForm, message: e.target.value})}
                   ></textarea>
                 </div>
                 <button type="submit" className="btn btn-primary btn-block">Book Tour</button>
@@ -537,6 +619,6 @@ function Home() {
       <Footer />
     </div>
   );
-}
+};
 
-export default Home;
+export default Home; 

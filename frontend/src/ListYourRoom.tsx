@@ -2,10 +2,29 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import './styles/ListYourRoom.css';
+import './styles/listyourroom.css';
 
-function FavoriteRooms() {
-  const [favorites, setFavorites] = useState([
+interface Room {
+  id: number;
+  title: string;
+  price: string;
+  size: string;
+  bed: string;
+  bath: string;
+  floor: string;
+  amenities: string[];
+  image: string;
+  status: 'available' | 'occupied';
+  dateAdded: string;
+  description: string;
+  furnishingStatus: 'fully furnished' | 'semi-furnished' | 'unfurnished';
+  roomCount: string;
+  leaseTerms?: string[];
+  location: string;
+}
+
+const FavoriteRooms: React.FC = () => {
+  const [favorites, setFavorites] = useState<Room[]>([
     {
       id: 1,
       title: "Room 105",
@@ -14,11 +33,15 @@ function FavoriteRooms() {
       bed: "Single bed",
       bath: "Private bathroom",
       floor: "1st Floor",
-      amenities: ["WiFi", "AC", "Study Desk", "Closet"],
+      amenities: ["WiFi", "AC", "Kitchenette", "Private Bathroom"],
       image: "/image/room1.jfif",
       status: "available",
       dateAdded: "3 days ago",
-      description: "Bright and airy room with large windows offering plenty of natural light. Features a comfortable single bed, private bathroom, and walk-in closet. Perfect for students or young professionals."
+      description: "Bright and airy room with large windows offering plenty of natural light. Features a comfortable single bed, private bathroom, and walk-in closet. Perfect for students or young professionals.",
+      furnishingStatus: "fully furnished",
+      roomCount: "1 room",
+      leaseTerms: ["12 months", "6 months", "month-to-month"],
+      location: "Fovere Residences"
     },
     {
       id: 3,
@@ -28,11 +51,15 @@ function FavoriteRooms() {
       bed: "Twin bed",
       bath: "Shared bathroom",
       floor: "2nd Floor",
-      amenities: ["WiFi", "AC", "Study Area", "Balcony"],
+      amenities: ["WiFi", "AC", "Balcony"],
       image: "/image/room3.jfif",
       status: "available",
       dateAdded: "1 week ago",
-      description: "Efficiently designed room with twin bed, built-in storage, and shared bathroom (max 2 others). Includes a spacious study area and small balcony with city view."
+      description: "Efficiently designed room with twin bed, built-in storage, and shared bathroom (max 2 others). Includes a spacious area and small balcony with city view.",
+      furnishingStatus: "unfurnished",
+      roomCount: "2 rooms",
+      leaseTerms: ["12 months", "6 months", "month-to-month", "weekly"],
+      location: "Fovere Residences"
     },
     {
       id: 4,
@@ -42,19 +69,23 @@ function FavoriteRooms() {
       bed: "Queen bed",
       bath: "Private bathroom",
       floor: "2nd Floor",
-      amenities: ["WiFi", "AC", "Kitchen", "Parking"],
+      amenities: ["WiFi", "AC", "Kitchenette", "Balcony", "Private Bathroom"],
       image: "/image/room4.jfif",
       status: "available",
       dateAdded: "2 weeks ago",
-      description: "Stunning corner room with modern appliances, spacious living area, and private bathroom. Features a well-equipped kitchenette and reserved parking spot."
+      description: "Stunning corner room with modern appliances, spacious living area, and private bathroom. Features a well-equipped kitchenette and reserved parking spot.",
+      furnishingStatus: "fully furnished",
+      roomCount: "3 rooms",
+      leaseTerms: ["12 months", "6 months", "weekly"],
+      location: "Fovere Residences"
     }
   ]);
 
-  const [viewMode, setViewMode] = useState('grid');
-  const [showModal, setShowModal] = useState(false);
-  const [selectedRoom, setSelectedRoom] = useState(null);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
 
-  const removeFromFavorite = (id, event) => {
+  const removeFromFavorite = (id: number, event?: React.MouseEvent): void => {
     if (event) event.stopPropagation();
     setFavorites(favorites.filter(room => room.id !== id));
     if (selectedRoom && selectedRoom.id === id) {
@@ -62,7 +93,7 @@ function FavoriteRooms() {
     }
   };
 
-  const handleRoomClick = (room) => {
+  const handleRoomClick = (room: Room): void => {
     setSelectedRoom(room);
     setShowModal(true);
   };
@@ -133,7 +164,7 @@ function FavoriteRooms() {
                     </p>
                     
                     <p className="room-specs">
-                      {room.size} • {room.bed} • {room.bath}
+                      {room.size} • {room.furnishingStatus} • {room.roomCount}
                     </p>
                     
                     <div className="room-features">
@@ -190,7 +221,7 @@ function FavoriteRooms() {
             <div className="room-details">
               <p className="room-price">{selectedRoom.price}</p>
               <p className="room-specs">
-                {selectedRoom.size} • {selectedRoom.bed} • {selectedRoom.bath}
+                {selectedRoom.size} • {selectedRoom.furnishingStatus} • {selectedRoom.roomCount}
               </p>
               <div className="room-location-info">
                 <i className="fas fa-building"></i> 
@@ -219,6 +250,6 @@ function FavoriteRooms() {
       <Footer />
     </div>
   );
-}
+};
 
 export default FavoriteRooms; 

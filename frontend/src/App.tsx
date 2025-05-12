@@ -7,15 +7,15 @@ import Signup from './Signup';
 import FavoriteRooms from './ListYourRoom';
 import Profile from './Profile';
 
-function Layout() {
+const Layout: React.FC = () => {
   return (
     <div className="App">
       <Outlet />
     </div>
   );
-}
+};
 
-function App() {
+const App: React.FC = () => {
   return (
     <Router>
       <Routes>
@@ -28,6 +28,6 @@ function App() {
       </Routes>
     </Router>
   );
-}
+};
 
-export default App;
+export default App; 

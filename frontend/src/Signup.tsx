@@ -1,10 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './styles/auth.css';
 
-function Signup() {
+interface FormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
+interface User {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}
+
+const Signup: React.FC = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     firstName: '',
     lastName: '',
     email: '',
@@ -12,11 +28,11 @@ function Signup() {
     confirmPassword: ''
   });
 
-  const [error, setError] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState<string>('');
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -32,7 +48,7 @@ function Signup() {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
     
@@ -41,14 +57,14 @@ function Signup() {
       return;
     }
 
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const users: User[] = JSON.parse(localStorage.getItem('users') || '[]');
     
     if (users.some(user => user.email === formData.email)) {
       setError('An account with this email already exists');
       return;
     }
 
-    const newUser = {
+    const newUser: User = {
       id: Date.now(),
       firstName: formData.firstName,
       lastName: formData.lastName,
@@ -60,7 +76,7 @@ function Signup() {
     
     localStorage.setItem('users', JSON.stringify(users));
 
-    const loggedInUser = {
+    const loggedInUser: Omit<User, 'password'> = {
       id: newUser.id,
       firstName: newUser.firstName,
       lastName: newUser.lastName,
@@ -144,7 +160,7 @@ function Signup() {
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  minLength="8"
+                  minLength={8}
                 />
                 <button 
                   type="button" 
@@ -202,6 +218,6 @@ function Signup() {
       </div>
     </div>
   );
-}
+};
 
 export default Signup; 
