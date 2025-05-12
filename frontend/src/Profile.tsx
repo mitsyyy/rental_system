@@ -3,8 +3,53 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import './styles/Profile.css';
 
-function Profile() {
-  const [userData, setUserData] = useState({
+interface UserData {
+  name: string;
+  email: string;
+  phone: string;
+  dateJoined: string;
+  avatar: string;
+}
+
+interface RentalInfo {
+  roomNumber: string;
+  floor: string;
+  rentAmount: string;
+  leaseStart: string;
+  leaseEnd: string;
+  securityDeposit: string;
+  status: string;
+  nextPaymentDue: string;
+}
+
+interface BillingRecord {
+  id: number;
+  month: string;
+  amount: string;
+  type: 'Rent' | 'Electricity' | 'Water';
+  status: 'Paid' | 'Pending' | 'Overdue';
+  datePaid: string;
+  receiptNumber: string;
+}
+
+interface Notification {
+  id: number;
+  title: string;
+  message: string;
+  date: string;
+  isRead: boolean;
+}
+
+interface Payment {
+  type: string;
+  amount: string;
+  dueDate: string;
+}
+
+type TabType = 'overview' | 'billing' | 'notifications' | 'settings';
+
+const Profile: React.FC = () => {
+  const [userData, setUserData] = useState<UserData>({
     name: "Maria Klara",
     email: "klara@gmail.com",
     phone: "+63 917 123 4567",
@@ -12,7 +57,7 @@ function Profile() {
     avatar: "/image/resident1.jfif"
   });
 
-  const [rentalInfo, setRentalInfo] = useState({
+  const [rentalInfo, setRentalInfo] = useState<RentalInfo>({
     roomNumber: "Room 105",
     floor: "1st Floor",
     rentAmount: "₱15,000/month",
@@ -23,7 +68,7 @@ function Profile() {
     nextPaymentDue: "May 1, 2023"
   });
 
-  const [billingHistory, setBillingHistory] = useState([
+  const [billingHistory, setBillingHistory] = useState<BillingRecord[]>([
     {
       id: 1,
       month: "April 2023",
@@ -71,7 +116,7 @@ function Profile() {
     }
   ]);
 
-  const [notifications, setNotifications] = useState([
+  const [notifications, setNotifications] = useState<Notification[]>([
     {
       id: 1,
       title: "Rent Due",
@@ -95,7 +140,7 @@ function Profile() {
     }
   ]);
 
-  const upcomingPayments = [
+  const upcomingPayments: Payment[] = [
     {
       type: "Rent",
       amount: "₱15,000",
@@ -117,9 +162,9 @@ function Profile() {
     return total + parseInt(payment.amount.replace(/[^\d]/g, ''));
   }, 0);
 
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState<TabType>('overview');
 
-  const handleReadNotification = (id) => {
+  const handleReadNotification = (id: number): void => {
     setNotifications(notifications.map(notification => 
       notification.id === id ? { ...notification, isRead: true } : notification
     ));
@@ -447,6 +492,6 @@ function Profile() {
       <Footer />
     </div>
   );
-}
+};
 
 export default Profile; 

@@ -1,104 +1,185 @@
-import React, { useState } from 'react';
+import React, { useState, ChangeEvent, FormEvent } from 'react';
 import './styles/rooms.css';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
+interface Room {
+  id: number;
+  title: string;
+  price: string;
+  size: string;
+  bed: string;
+  bath: string;
+  floor: string;
+  location: string;
+  description: string;
+  amenities: string[];
+  image: string;
+  status: 'available' | 'occupied';
+  dateAdded: string;
+  leaseTerms: string[];
+  deposit: string;
+  utilities: string;
+  moveInDate: string;
+  furnishingStatus: 'fully furnished' | 'semi-furnished' | 'unfurnished';
+  roomCount: string;
+}
+
+interface Filters {
+  floor: string;
+  availability: string;
+  minPrice: number;
+  maxPrice: number;
+  furnishingStatus: string;
+  amenities: {
+    wifi: boolean;
+    ac: boolean;
+    privateBathroom: boolean;
+    kitchenette: boolean;
+    balcony: boolean;
+  };
+  sortBy: string;
+}
+
+interface FormData {
+  name: string;
+  email: string;
+  phone: string;
+  moveInDate: string;
+  leaseTerm: string;
+  employment: string;
+  notes: string;
+}
+
 function Rooms() {
-  const [rooms, setRooms] = useState([
+  const [rooms, setRooms] = useState<Room[]>([
     {
       id: 1,
       title: "Room 105",
       price: "₱15,000/mo",
-      size: "250",
+      size: "28 sqm",
       bed: "Single bed",
       bath: "Private bathroom",
-      location: "Makati",
-      description: "Bright and airy room with large windows offering plenty of natural light. Features a comfortable single bed, private bathroom, and walk-in closet. Perfect for young professionals who want a clean, modern space in the heart of the city.",
-      amenities: ["WiFi", "AC", "Laundry"],
+      floor: "1st Floor",
+      location: "Fovere Residences",
+      description: "Bright and airy room with large windows offering plenty of natural light. Features a comfortable single bed, private bathroom, and walk-in closet. Perfect for students or young professionals.",
+      amenities: ["WiFi", "AC", "Kitchenette", "Private Bathroom"],
       image: "/image/room1.jfif",
       status: "available",
-      type: "Studio Room",
-      leaseTerms: ["6 months", "12 months"],
+      dateAdded: "3 days ago",
+      leaseTerms: ["12 months", "6 months", "month-to-month"],
       deposit: "₱15,000",
       utilities: "Included",
-      moveInDate: "Immediate"
+      moveInDate: "Immediate",
+      furnishingStatus: "fully furnished",
+      roomCount: "1 room"
     },
     {
       id: 2,
       title: "Room 107",
       price: "₱12,000/mo",
-      size: "220",
+      size: "25 sqm",
       bed: "Queen bed",
       bath: "Shared bathroom",
-      location: "Quezon City",
+      floor: "1st Floor",
+      location: "Fovere Residences",
       description: "Warm and inviting room with comfortable queen bed and shared bathroom. Features a study desk, bookshelf, and ample storage. Quiet neighborhood with easy access to public transportation.",
-      amenities: ["WiFi", "Heating", "Kitchen"],
+      amenities: ["WiFi", "AC", "Kitchenette"],
       image: "/image/room2.jfif",
       status: "occupied",
-      type: "Standard Room",
-      leaseTerms: ["12 months"],
+      dateAdded: "5 days ago",
+      leaseTerms: ["12 months", "6 months"],
       deposit: "₱12,000",
       utilities: "Not included",
-      moveInDate: "Next month"
+      moveInDate: "Next month",
+      furnishingStatus: "semi-furnished",
+      roomCount: "1 room"
     },
     {
       id: 3,
       title: "Room 201",
       price: "₱18,000/mo",
-      size: "400",
+      size: "35 sqm",
       bed: "King bed",
-      bath: "Private bathroom",
-      location: "BGC",
-      description: "Spacious and luxurious room with high-end finishes. Features a king-size bed, private bathroom, and stunning city views. Perfect for those seeking premium accommodations.",
-      amenities: ["WiFi", "AC", "Kitchen"],
+      bath: "Shared bathroom",
+      floor: "2nd Floor",
+      location: "Fovere Residences",
+      description: "Efficiently designed room with twin bed, built-in storage, and shared bathroom (max 2 others). Includes a spacious area and small balcony with city view.",
+      amenities: ["WiFi", "AC", "Balcony"],
       image: "/image/room3.jfif",
       status: "available",
-      type: "Suite",
-      leaseTerms: ["6 months", "12 months"],
+      dateAdded: "1 week ago",
+      leaseTerms: ["12 months", "6 months", "month-to-month", "weekly"],
       deposit: "₱18,000",
       utilities: "Included",
-      moveInDate: "Next week"
+      moveInDate: "Next week",
+      furnishingStatus: "unfurnished",
+      roomCount: "2 rooms"
     },
     {
       id: 4,
       title: "Room 203",
       price: "₱20,000/mo",
-      size: "600",
+      size: "40 sqm",
       bed: "Queen bed",
       bath: "Private bathroom",
-      location: "Pasig",
-      description: "Stunning room with modern appliances, spacious living area, and private balcony. Experience luxury living in a prime location.",
-      amenities: ["WiFi", "AC", "Parking"],
+      floor: "2nd Floor",
+      location: "Fovere Residences",
+      description: "Stunning corner room with modern appliances, spacious living area, and private bathroom. Features a well-equipped kitchenette and reserved parking spot.",
+      amenities: ["WiFi", "AC", "Kitchenette", "Balcony", "Private Bathroom"],
       image: "/image/room4.jfif",
       status: "available",
-      type: "Apartment",
-      leaseTerms: ["12 months"],
+      dateAdded: "2 weeks ago",
+      leaseTerms: ["12 months", "6 months", "weekly"],
       deposit: "₱20,000",
       utilities: "Not included",
-      moveInDate: "Immediate"
+      moveInDate: "Immediate",
+      furnishingStatus: "fully furnished",
+      roomCount: "3 rooms"
+    },
+    {
+      id: 5,
+      title: "Room 301",
+      price: "₱22,000/mo",
+      size: "45 sqm",
+      bed: "King bed",
+      bath: "Private bathroom",
+      floor: "3rd Floor",
+      location: "Fovere Residences",
+      description: "Luxurious corner unit with panoramic views. Features a king-size bed, spacious private bathroom, and premium furnishings throughout.",
+      amenities: ["WiFi", "AC", "Kitchenette", "Balcony", "Private Bathroom"],
+      image: "/image/room1.jfif",
+      status: "available",
+      dateAdded: "1 day ago",
+      leaseTerms: ["12 months", "6 months", "month-to-month"],
+      deposit: "₱22,000",
+      utilities: "Included",
+      moveInDate: "Immediate",
+      furnishingStatus: "fully furnished",
+      roomCount: "2 rooms"
     }
   ]);
 
-  const [filters, setFilters] = useState({
-    type: "",
-    location: "",
+  const [filters, setFilters] = useState<Filters>({
+    floor: "",
     availability: "",
     minPrice: 0,
-    maxPrice: 2000,
+    maxPrice: 25000,
+    furnishingStatus: "",
     amenities: {
       wifi: false,
       ac: false,
       privateBathroom: false,
-      kitchen: false,
-      parking: false
+      kitchenette: false,
+      balcony: false
     },
     sortBy: ""
   });
 
-  const [showModal, setShowModal] = useState(false);
-  const [selectedRoom, setSelectedRoom] = useState(null);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
     phone: "",
@@ -108,12 +189,12 @@ function Rooms() {
     notes: ""
   });
 
-  const handleRoomClick = (room) => {
+  const handleRoomClick = (room: Room): void => {
     setSelectedRoom(room);
     setShowModal(true);
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>): void => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -121,7 +202,7 @@ function Rooms() {
     });
   };
 
-  const handleFilterChange = (e) => {
+  const handleFilterChange = (e: ChangeEvent<HTMLSelectElement>): void => {
     const { name, value } = e.target;
     setFilters({
       ...filters,
@@ -129,7 +210,7 @@ function Rooms() {
     });
   };
 
-  const handleAmenityChange = (e) => {
+  const handleAmenityChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const { name, checked } = e.target;
     setFilters({
       ...filters,
@@ -140,7 +221,7 @@ function Rooms() {
     });
   };
 
-  const handlePriceChange = (e) => {
+  const handlePriceChange = (e: { target: { name: string; value: string } }): void => {
     const { name, value } = e.target;
     setFilters({
       ...filters,
@@ -148,7 +229,7 @@ function Rooms() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     alert('Thank you for your rental application! Our team will contact you shortly.');
     setFormData({
@@ -162,37 +243,37 @@ function Rooms() {
     });
   };
 
-  const clearFilters = () => {
+  const clearFilters = (): void => {
     setFilters({
-      type: "",
-      location: "",
+      floor: "",
       availability: "",
       minPrice: 0,
-      maxPrice: 2000,
+      maxPrice: 25000,
+      furnishingStatus: "",
       amenities: {
         wifi: false,
         ac: false,
         privateBathroom: false,
-        kitchen: false,
-        parking: false
+        kitchenette: false,
+        balcony: false
       },
       sortBy: ""
     });
   };
 
   const filteredRooms = rooms.filter(room => {
-    if (filters.type && room.type !== filters.type) return false;
-    if (filters.location && room.location !== filters.location) return false;
+    if (filters.floor && room.floor !== filters.floor) return false;
     if (filters.availability && room.status !== filters.availability) return false;
+    if (filters.furnishingStatus && room.furnishingStatus !== filters.furnishingStatus) return false;
     
     const price = parseInt(room.price.replace(/[^\d]/g, ''));
     if (price < filters.minPrice || price > filters.maxPrice) return false;
     
     if (filters.amenities.wifi && !room.amenities.includes('WiFi')) return false;
     if (filters.amenities.ac && !room.amenities.includes('AC')) return false;
-    if (filters.amenities.privateBathroom && !room.bath.includes('Private')) return false;
-    if (filters.amenities.kitchen && !room.amenities.includes('Kitchen')) return false;
-    if (filters.amenities.parking && !room.amenities.includes('Parking')) return false;
+    if (filters.amenities.privateBathroom && !room.amenities.includes('Private Bathroom')) return false;
+    if (filters.amenities.kitchenette && !room.amenities.includes('Kitchenette')) return false;
+    if (filters.amenities.balcony && !room.amenities.includes('Balcony')) return false;
     
     return true;
   });
@@ -231,36 +312,19 @@ function Rooms() {
             <div className="rooms-filters">
               <h3>Filters</h3>
               
-              {/* Room Type Filter */}
-              <div className="filter-group">
-                <label className="filter-label">Room Type</label>
-                <select 
-                  className="filter-select"
-                  name="type"
-                  value={filters.type}
-                  onChange={handleFilterChange}
-                >
-                  <option value="">All Types</option>
-                  <option value="Studio Room">Studio Room</option>
-                  <option value="Standard Room">Standard Room</option>
-                  <option value="Suite">Suite</option>
-                  <option value="Apartment">Apartment</option>
-                </select>
-              </div>
-
               {/* Price Range Filter */}
               <div className="filter-group">
                 <label className="filter-label">Price Range</label>
                 <div className="price-range">
                   <div className="price-range-labels">
-                    <span>$0</span>
-                    <span>$2000</span>
+                    <span>₱0</span>
+                    <span>₱25,000</span>
                   </div>
                   <input 
                     type="range" 
                     min="0" 
-                    max="30000" 
-                    step="100" 
+                    max="25000" 
+                    step="1000" 
                     value={filters.maxPrice}
                     onChange={(e) => handlePriceChange({ target: { name: 'maxPrice', value: e.target.value } })}
                   />
@@ -271,7 +335,7 @@ function Rooms() {
                       value={filters.minPrice}
                       onChange={(e) => handlePriceChange({ target: { name: 'minPrice', value: e.target.value } })}
                       min="0" 
-                      max="30000" 
+                      max="25000" 
                     />
                     <span className="price-separator">to</span>
                     <input 
@@ -280,26 +344,41 @@ function Rooms() {
                       value={filters.maxPrice}
                       onChange={(e) => handlePriceChange({ target: { name: 'maxPrice', value: e.target.value } })}
                       min="0" 
-                      max="30000" 
+                      max="25000" 
                     />
                   </div>
                 </div>
               </div>
 
-              {/* Location Filter */}
+              {/* Floor Filter */}
               <div className="filter-group">
-                <label className="filter-label">Location</label>
+                <label className="filter-label">Floor</label>
                 <select 
                   className="filter-select"
-                  name="location"
-                  value={filters.location}
+                  name="floor"
+                  value={filters.floor}
                   onChange={handleFilterChange}
                 >
-                  <option value="">All Locations</option>
-                  <option value="Makati">Makati</option>
-                  <option value="Quezon City">Quezon City</option>
-                  <option value="BGC">BGC</option>
-                  <option value="Pasig">Pasig</option>
+                  <option value="">All Floors</option>
+                  <option value="1st Floor">1st Floor</option>
+                  <option value="2nd Floor">2nd Floor</option>
+                  <option value="3rd Floor">3rd Floor</option>
+                </select>
+              </div>
+
+              {/* Furnishing Status Filter */}
+              <div className="filter-group">
+                <label className="filter-label">Furnishing Status</label>
+                <select 
+                  className="filter-select"
+                  name="furnishingStatus"
+                  value={filters.furnishingStatus}
+                  onChange={handleFilterChange}
+                >
+                  <option value="">Any Status</option>
+                  <option value="fully furnished">Fully Furnished</option>
+                  <option value="semi-furnished">Semi-Furnished</option>
+                  <option value="unfurnished">Unfurnished</option>
                 </select>
               </div>
 
@@ -356,21 +435,21 @@ function Rooms() {
                     <input 
                       type="checkbox" 
                       className="checkbox-input"
-                      name="kitchen"
-                      checked={filters.amenities.kitchen}
+                      name="kitchenette"
+                      checked={filters.amenities.kitchenette}
                       onChange={handleAmenityChange}
                     />
-                    <span className="checkbox-text">Kitchen Access</span>
+                    <span className="checkbox-text">Kitchenette</span>
                   </label>
                   <label className="checkbox-label">
                     <input 
                       type="checkbox" 
                       className="checkbox-input"
-                      name="parking"
-                      checked={filters.amenities.parking}
+                      name="balcony"
+                      checked={filters.amenities.balcony}
                       onChange={handleAmenityChange}
                     />
-                    <span className="checkbox-text">Parking</span>
+                    <span className="checkbox-text">Balcony</span>
                   </label>
                 </div>
               </div>
@@ -412,16 +491,16 @@ function Rooms() {
                     <div className={`status-badge ${room.status === 'available' ? 'status-available' : 'status-occupied'}`}>
                       {room.status === 'available' ? 'Available' : 'Occupied'}
                     </div>
-                    <div className="room-type-badge">
-                      {room.type}
-                    </div>
                   </div>
                   <div className="room-details">
                     <div className="room-header">
                       <h3 className="room-title">{room.title}</h3>
                       <span className="room-price">{room.price}</span>
                     </div>
-                    <p className="room-info">{room.size} sqft • {room.bath} • {room.location}</p>
+                    <p className="room-info">{room.size} • {room.furnishingStatus} • {room.roomCount}</p>
+                    <p className="room-location">
+                      <i className="fas fa-building"></i> {room.floor}
+                    </p>
                     <div className="room-features">
                       {room.amenities.map((amenity, index) => (
                         <span key={index} className="feature-tag">{amenity}</span>
@@ -498,15 +577,15 @@ function Rooms() {
                   <div className="room-specs-grid">
                     <div className="room-spec">
                       <i className="fas fa-ruler-combined spec-icon"></i>
-                      <p className="spec-text">{selectedRoom.size} sqft</p>
+                      <p className="spec-text">{selectedRoom.size}</p>
                     </div>
                     <div className="room-spec">
-                      <i className="fas fa-bed spec-icon"></i>
-                      <p className="spec-text">{selectedRoom.bed}</p>
+                      <i className="fas fa-couch spec-icon"></i>
+                      <p className="spec-text">{selectedRoom.furnishingStatus}</p>
                     </div>
                     <div className="room-spec">
-                      <i className="fas fa-bath spec-icon"></i>
-                      <p className="spec-text">{selectedRoom.bath}</p>
+                      <i className="fas fa-door-open spec-icon"></i>
+                      <p className="spec-text">{selectedRoom.roomCount}</p>
                     </div>
                   </div>
                   
@@ -538,15 +617,19 @@ function Rooms() {
                       <span className="rental-info-label">Available From:</span>
                       <span className="rental-info-value">{selectedRoom.moveInDate}</span>
                     </div>
+                    <div className="rental-info-item">
+                      <span className="rental-info-label">Date Added:</span>
+                      <span className="rental-info-value">{selectedRoom.dateAdded}</span>
+                    </div>
                   </div>
                 </div>
                 
                 <div>
                   <h3 className="modal-room-title">{selectedRoom.title}</h3>
                   <p className="modal-room-price">{selectedRoom.price}</p>
-                  <p className="modal-room-location">
-                    <i className="fas fa-map-marker-alt location-icon"></i>
-                    <span>{selectedRoom.location}</span>
+                  <p className="modal-room-floor">
+                    <i className="fas fa-building"></i>
+                    <span>{selectedRoom.floor}</span>
                   </p>
                   
                   {/* Message for occupied rooms */}
@@ -636,7 +719,7 @@ function Rooms() {
                         <label className="form-label">Additional Notes</label>
                         <textarea 
                           className="form-textarea"
-                          rows="3"
+                          rows={3}
                           name="notes"
                           value={formData.notes}
                           onChange={handleInputChange}

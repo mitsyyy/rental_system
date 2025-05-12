@@ -1,22 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-function Navbar({ alwaysWhite = false }) {
-  const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+interface NavbarProps {
+  alwaysWhite?: boolean;
+}
+
+interface UserProfile {
+  name: string;
+  email: string;
+  avatar: string;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ alwaysWhite = false }) => {
+  const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState<boolean>(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
   
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const userProfile = {
+  const userProfile: UserProfile = {
     name: "Maria Klara",
     email: "klara@gmail.com",
     avatar: "/image/resident1.jfif" 
   };
 
   useEffect(() => {
-    const handleScroll = () => {
+    const handleScroll = (): void => {
       if (alwaysWhite) return; 
       
-      const navbar = document.querySelector('.navbar');
+      const navbar = document.querySelector('.navbar') as HTMLElement;
       if (window.scrollY > 100) {
         navbar.style.backgroundColor = 'white';
         navbar.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
@@ -28,15 +38,17 @@ function Navbar({ alwaysWhite = false }) {
       }
     };
 
-    const updateNavColors = (theme) => {
+    const updateNavColors = (theme: 'dark' | 'light'): void => {
       const elements = document.querySelectorAll('.nav-link:not(.active), .navbar-brand span');
       elements.forEach(el => {
-        el.style.color = theme === 'dark' ? '#1e293b' : 'white';
+        if (el instanceof HTMLElement) {
+          el.style.color = theme === 'dark' ? '#1e293b' : 'white';
+        }
       });
     };
 
     if (alwaysWhite) {
-      const navbar = document.querySelector('.navbar');
+      const navbar = document.querySelector('.navbar') as HTMLElement;
       navbar.style.backgroundColor = 'white';
       navbar.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
       updateNavColors('dark');
@@ -47,8 +59,8 @@ function Navbar({ alwaysWhite = false }) {
   }, [alwaysWhite]);
 
   useEffect(() => {
-    const closeDropdown = (e) => {
-      if (showProfileDropdown && !e.target.closest('.profile-container')) {
+    const closeDropdown = (e: MouseEvent): void => {
+      if (showProfileDropdown && !(e.target as Element).closest('.profile-container')) {
         setShowProfileDropdown(false);
       }
     };
@@ -57,14 +69,12 @@ function Navbar({ alwaysWhite = false }) {
     return () => document.removeEventListener('click', closeDropdown);
   }, [showProfileDropdown]);
 
-  // Toggle profile dropdown
-  const toggleProfileDropdown = (e) => {
+  const toggleProfileDropdown = (e: React.MouseEvent): void => {
     e.stopPropagation();
     setShowProfileDropdown(!showProfileDropdown);
   };
 
-  // Function to handle logout
-  const handleLogout = () => {
+  const handleLogout = (): void => {
     setIsLoggedIn(false);
     // In a real app, you would call your logout function from auth context
   };
@@ -148,6 +158,6 @@ function Navbar({ alwaysWhite = false }) {
       )}
     </nav>
   );
-}
+};
 
 export default Navbar; 

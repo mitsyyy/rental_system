@@ -1,18 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './styles/auth.css';
 
-function Login() {
+interface FormData {
+  email: string;
+  password: string;
+}
+
+interface User {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}
+
+const Login: React.FC = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     email: '',
     password: ''
   });
 
-  const [error, setError] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string>('');
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -24,11 +37,11 @@ function Login() {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
 
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const users: User[] = JSON.parse(localStorage.getItem('users') || '[]');
     
     const user = users.find(u => u.email === formData.email);
     
@@ -42,7 +55,7 @@ function Login() {
       return;
     }
 
-    const loggedInUser = {
+    const loggedInUser: Omit<User, 'password'> = {
       id: user.id,
       firstName: user.firstName,
       lastName: user.lastName,
@@ -130,6 +143,6 @@ function Login() {
       </div>
     </div>
   );
-}
+};
 
 export default Login; 

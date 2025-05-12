@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Footer() {
+const Footer: React.FC = () => {
   return (
     <footer className="footer">
       <div className="container">
@@ -49,10 +49,9 @@ function Footer() {
             </form>
           </div>
         </div>
-        
       </div>
     </footer>
   );
-}
+};
 
 export default Footer; 
