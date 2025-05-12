@@ -39,6 +39,9 @@ jobs:
       run: npm run build --if-present
       env:
          CI: false
+    - name: run npm deploy at frontend
+      working-directory: ./frontend
+      run: npm run deploy
     # - name: run npm test at frontend
     #   working-directory: ./frontend
     #   run: npm test
